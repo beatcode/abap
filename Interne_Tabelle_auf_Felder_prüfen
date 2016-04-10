@@ -1,0 +1,28 @@
+data: lr_struct_descr   TYPE REF TO cl_abap_structdescr,
+      wa_table          TYPE abap_compdescr,
+      lv_langu          TYPE string,
+      lt_text           TYPE rstxttab,
+
+
+ " Texttabelle aus InfoObjektname ermitteln
+      CALL FUNCTION 'RSD_CHKTAB_GET_FOR_CHA_BAS'
+        EXPORTING
+          i_chabasnm = '0PLANT'
+        IMPORTING
+          e_txttab   = lt_text
+        EXCEPTIONS
+          name_error = 1
+          OTHERS     = 2.
+
+ 
+ lr_struct_descr ?= cl_abap_structdescr=>describe_by_name( lt_text ).
+ 
+ " Prüfen ob die Texttabelle des Infoobjekt Sprachabhängig ist.
+      lv_langu = 0.
+      LOOP AT lr_struct_descr->components INTO wa_table .
+        IF wa_table-name EQ 'LANGU'.
+          lv_langu = 1.
+        ENDIF.
+      ENDLOOP.
+      
+      
