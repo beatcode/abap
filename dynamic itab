@@ -1,48 +1,49 @@
 
-
-DATA:
-      ls_cob_pro        TYPE rsd_s_cob_pro,
-      lr_struct_descr   TYPE REF TO cl_abap_structdescr,
-      ls_component      TYPE abap_componentdescr,
-      lt_components     TYPE abap_component_tab,
-      lr_table_descr   TYPE REF TO cl_abap_tabledescr,
-      lv_table TYPE  string,
-      lo_data_txt TYPE REF TO data.
-
-FIELD-SYMBOLS: <lo_data_txt> TYPE ANY TABLE.
-
-DATA:     lt_text TYPE rstxttab.
-
-CALL FUNCTION 'RSD_CHKTAB_GET_FOR_CHA_BAS'
-  EXPORTING
-    i_chabasnm = '0PLANT'
-    IMPORTING
-    e_txttab   = lt_text
-  EXCEPTIONS
-    name_error = 1
-    OTHERS     = 2.
-
-IF sy-subrc <> 0.
-  MESSAGE ID sy-msgid TYPE 'E' NUMBER sy-msgno
-         WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
-
-ENDIF.
+  DATA:
+        ls_cob_pro        TYPE rsd_s_cob_pro,
+        lr_struct_descr   TYPE REF TO cl_abap_structdescr,
+        ls_component      TYPE abap_componentdescr,
+        lt_components     TYPE abap_component_tab,
+        lr_table_descr    TYPE REF TO cl_abap_tabledescr,
+        wa_table          TYPE abap_compdescr,
+        ls_data_txt       TYPE ty_data_txt,
+        lv_table          TYPE string,
+        lo_data_txt       TYPE REF TO data,
+        lt_text           TYPE rstxttab,
+        lv_langu          TYPE string.
 
 
- ls_component-name   = 'objname'.
-  ls_component-type   ?= cl_abap_elemdescr=>get_string( ).
-  INSERT ls_component INTO TABLE lt_components.
+  FIELD-SYMBOLS: <lo_data_txt>  TYPE ANY TABLE,
+                 <fs_struc_component> TYPE any.
+                 
 
-  ls_component-name   = 'value'.
-  ls_component-type   ?= cl_abap_elemdescr=>get_string( ).
-  INSERT ls_component INTO TABLE lt_components.
+      " Aus dem Text des InfoObjekte die Text Tabelle für den späteren Select ermitteln
+      CALL FUNCTION 'RSD_CHKTAB_GET_FOR_CHA_BAS'
+        EXPORTING
+          i_chabasnm = ls_cob_pro-iobjnm
+        IMPORTING
+          e_txttab   = lt_text
+        EXCEPTIONS
+          name_error = 1
+          OTHERS     = 2.
 
+      " eine neue itab aus der Struktur der InfoObjekt-Texttabelle dynamisch erstellen.
+      lr_struct_descr ?= cl_abap_structdescr=>describe_by_name( lt_text ).
+      lr_table_descr ?= cl_abap_tabledescr=>create( p_line_type  = lr_struct_descr ).
 
-    lr_struct_descr ?= cl_abap_structdescr=>create( p_components = lt_components ).
-    lr_table_descr ?= cl_abap_tabledescr=>create( p_line_type  = lr_struct_descr ).
+      CREATE DATA lo_data_txt     TYPE HANDLE lr_table_descr.
+      ASSIGN    lo_data_txt->*  TO <lo_data_txt>.
 
+      " Prüfen ob die Texttabelle des Infoobjekt Sprachabhängig ist.
+      lv_langu = 0.
+      LOOP AT lr_struct_descr->components INTO wa_table .
+        IF wa_table-name EQ 'LANGU'.
+          lv_langu = 1.
+        ENDIF.
+      ENDLOOP.
 
-CREATE DATA lo_data_txt     TYPE HANDLE lr_table_descr.
-ASSIGN    lo_data_txt->*  TO <lo_data_txt>.
-
-SELECT * FROM (lt_text) INTO   TABLE <lo_data_txt>.
+      IF lv_langu EQ 1.
+        SELECT * FROM (lt_text) INTO CORRESPONDING FIELDS OF TABLE <lo_data_txt> WHERE langu EQ 'DE'.
+      ELSE.
+        SELECT * FROM (lt_text) INTO CORRESPONDING FIELDS OF TABLE <lo_data_txt>.
+      ENDIF.
