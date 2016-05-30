@@ -1,0 +1,32 @@
+DATA: lo_class        TYPE REF TO cl_rsd_iobj_utilities,
+      lt_usage        TYPE rso_t_tlogo_asc,
+      ls_rso_s_tlogo  TYPE LINE OF rso_th_tlogo,
+      lt_rso_s_tlogo  TYPE  rso_th_tlogo,
+      ls_cob_pro      TYPE rsd_s_cob_pro.
+
+
+" Alle Informationen zum InfoObject holen
+CALL FUNCTION 'RSD_IOBJ_GET'
+  EXPORTING
+    i_iobjnm    = '0PLANT'
+  IMPORTING
+    e_s_cob_pro = ls_cob_pro.
+
+" Input Tabelle erstellen für Parameter i_th_tlogo der cl_rsd_iobj_utilities  
+ls_rso_s_tlogo-objnm = ls_cob_pro-iobjnm.
+ls_rso_s_tlogo-tlogo  = ls_cob_pro-iobjtp.
+insert ls_rso_s_tlogo into TABLE lt_rso_s_tlogo.
+
+
+CREATE OBJECT lo_class.
+
+lo_class->get_usage_in_infoprovider(
+  EXPORTING
+    i_iobjnm     = '0PLANT'    " InfoObject
+    i_objvers    = RS_C_OBJVERS-ACTIVE    " Objektversion
+   i_th_tlogo   =  lt_rso_s_tlogo    " BW Repository: Liste (Hash) von TLOGO Objekt und Typ
+  RECEIVING
+    r_t_obj_used =  lt_usage   " BW Repository: Tabelle von Objekten und Assoziationstyp
+).
+
+" in lt_usage sind die InfoProvider aufgelistet in welchen das InfoObjekt verwendet wird.
