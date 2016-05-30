@@ -1,0 +1,9 @@
+
+DATA: 
+otab TYPE abap_sortorder_tab,
+oline TYPE abap_sortorder.
+
+oline-name = 'MATERIAL'.
+APPEND oline TO otab.
+
+SORT <itab> BY (otab).
