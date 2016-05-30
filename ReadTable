@@ -1,0 +1,6 @@
+" Prüfen von internen Tabellen
+
+READ TABLE lt_usage WITH KEY objnm = iv_infoprov TRANSPORTING NO FIELDS.
+IF sy-subrc NE 0.
+  lv_cnt = lv_cnt + 1.
+ENDIF.
