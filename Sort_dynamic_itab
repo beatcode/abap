@@ -1,9 +1,17 @@
 
-DATA: 
-otab TYPE abap_sortorder_tab,
-oline TYPE abap_sortorder.
+  DATA:
+        otab       TYPE abap_sortorder_tab,
+        oline      TYPE abap_sortorder.
 
-oline-name = 'MATERIAL'.
-APPEND oline TO otab.
+  FIELD-SYMBOLS:
+        <itab>     type any table.
 
-SORT <itab> BY (otab).
+  oline-name = 'MATERIAL'.
+  APPEND oline TO otab.
+    oline-name = 'CALWEEK'.
+  APPEND oline TO otab.
+  oline-name = 'PLANT'.
+  APPEND oline TO otab.
+
+  SORT <itab> BY (otab).
+
