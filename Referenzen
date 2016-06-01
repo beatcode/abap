@@ -21,7 +21,7 @@ get REFERENCE OF <lt_data> INTO ev_result.
 * Methodenaufruf im Program 
 ****************************
 Data:  lr_result     type REF TO data,
-" SLW Berechnung auf der Referenz durchführen
+
 lr_result = lo_Klasse->CREATE_DATA( ).
 
 FIELD-SYMBOLS: <lt_data> type ANY TABLE.
