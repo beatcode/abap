@@ -1,4 +1,7 @@
-
+***************************************
+* METHODE CREATE_DATA
+* Exporting: EV_RESULT type ref to data
+****************************************
 " Referenz 
 data: lr_data type REF TO data.
 
@@ -8,4 +11,20 @@ FIELD-SYMBOLS: <lt_data> type ANY TABLE.
 create DATA lr_data type STANDARD TABLE OF z_testtable.
 ASSIGN lr_data->* to <lt_data>.
 
+" Hier der Supercode welcher die <lt_data> bearbeitet.
+
+"Rückgabe in ein ref to Data Parameter.
 get REFERENCE OF <lt_data> INTO ev_result.
+
+
+****************************
+* Methodenaufruf im Program 
+****************************
+Data:  lr_result     type REF TO data,
+" SLW Berechnung auf der Referenz durchführen
+lr_result = lo_Klasse->CREATE_DATA( ).
+
+FIELD-SYMBOLS: <lt_data> type ANY TABLE.
+
+ASSIGN lr_result->* to <lo_data>.
+
