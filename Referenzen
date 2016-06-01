@@ -1,0 +1,11 @@
+
+" Referenz 
+data: lr_data type REF TO data.
+
+" itab
+FIELD-SYMBOLS: <lt_data> type ANY TABLE.
+
+create DATA lr_data type STANDARD TABLE OF z_testtable.
+ASSIGN lr_data->* to <lt_data>.
+
+get REFERENCE OF <lt_data> INTO ev_result.
