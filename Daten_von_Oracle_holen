@@ -1,0 +1,32 @@
+TYPES: BEGIN OF ty_oratable,
+   feld1             TYPE    string,
+   feld2             TYPE string,
+   feld3             TYPE string,
+  
+END OF ty_oratable.
+
+" Referenz
+DATA: lr_connection     TYPE REF TO cl_sql_connection,
+      lr_con            TYPE REF TO cl_sql_connection,
+      lr_statement      TYPE REF TO cl_sql_statement,
+      lr_result         TYPE REF TO cl_sql_result_set,
+      lr_ora_table       TYPE REF TO data,
+      lt_ora_table        TYPE STANDARD TABLE OF ty_oratable.
+      
+
+FIELD-SYMBOLS: <itab> TYPE ANY TABLE.
+
+GET REFERENCE OF lt_ora_table INTO lr_ora_table.
+
+" ABC.WORLD  Oracle Verbindung in der ST04 einrichten
+lr_connection = cl_sql_connection=>get_connection( 'ABC.WORLD' ).
+
+lr_statement  = lr_connection->create_statement( ).
+
+lr_result     = lr_statement->execute_query( 'Select * from tbl_test' ).
+
+lr_result->set_param_table( lr_ora_table ).
+
+ASSIGN lr_ora_table->* to <itab>.
+
+lr_result->next_package( 10 ).
