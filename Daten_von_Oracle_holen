@@ -7,7 +7,6 @@ END OF ty_oratable.
 
 " Referenz
 DATA: lr_connection     TYPE REF TO cl_sql_connection,
-      lr_con            TYPE REF TO cl_sql_connection,
       lr_statement      TYPE REF TO cl_sql_statement,
       lr_result         TYPE REF TO cl_sql_result_set,
       lr_ora_table       TYPE REF TO data,
