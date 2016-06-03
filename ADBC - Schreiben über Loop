@@ -1,0 +1,37 @@
+
+" types, lr_connection wie bei den anderen Beispielen 
+
+data: lr_connection     TYPE REF TO cl_sql_connection,
+      lr_prep_statement TYPE REF TO cl_sql_prepared_statement,
+      lr_insert       TYPE REF TO data,
+      ls_insert       type ty_dataset,
+      lt_insert       TYPE STANDARD TABLE OF ty_dataset.
+
+FIELD-SYMBOLS: <ls_insert> type ty_dataset.
+
+get REFERENCE OF ls_insert INTO lr_insert.
+
+lr_connection = cl_sql_connection=>get_connection( 'TEST.WORLD' ).
+
+ls_insert-feld1 = 100.
+ls_insert-feld2 = 100.
+insert ls_insert INTO TABLE lt_insert .
+
+ls_insert-feld1 = 101.
+ls_insert-feld2 = 101.
+insert ls_insert INTO TABLE lt_insert  .
+
+" Statement initial inkl. Platzhalter bei Prepar
+create OBJECT lr_prep_statement
+  EXPORTING
+    con_ref   =   lr_connection
+    statement =    |Insert into MITS_SLW (PRODUCT_ID,BW, BB, VS) VALUES (?,?,4,4)|
+  .
+
+lr_prep_statement->set_param_struct( lr_insert ).
+
+loop at lt_insert ASSIGNING <ls_insert> .
+
+  lr_prep_statement->execute_update(  ).
+
+ENDLOOP. 
