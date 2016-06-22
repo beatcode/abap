@@ -4,7 +4,8 @@
     lt_components     TYPE abap_component_tab,
     ls_component      TYPE abap_componentdescr,
     lr_struct_descr   TYPE REF TO cl_abap_structdescr,
-    lr_table_descr    TYPE REF TO cl_abap_tabledescr.
+    lr_table_descr    TYPE REF TO cl_abap_tabledescr,
+    lR_DATA           type ref to data.
 
     FIELD-SYMBOLS:
                    <fs_component>   TYPE  abap_componentdescr,
@@ -35,10 +36,10 @@
 
     " Die Referenz pr_data (Attribut) auf Basis des neuen Typ erstellen.
     " Auf die Referenz (Daten) pr_data wird auch aus der Subklasse zugegriffen daher wird dies als Attribut erstellt.
-    CREATE DATA me->pr_data   TYPE HANDLE lr_table_descr.
+    CREATE DATA lR_DATA   TYPE HANDLE lr_table_descr.
 
     " Die Referenz zu der internen Tabelle verknüpfen
-    ASSIGN pr_data->*     TO <o_data>.
+    ASSIGN lR_DATA->*     TO <o_data>.
     
     
     
