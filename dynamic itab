@@ -11,8 +11,6 @@
                    <o_data>         TYPE STANDARD TABLE,
                    <field>          TYPE  any.
                    
-    " liefert die Informationen zum InfoObjekt.
-    
      " Alle Informationen zum InfoObject holen
       CALL FUNCTION 'RSD_IOBJ_GET'
         EXPORTING
