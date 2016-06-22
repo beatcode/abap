@@ -1,49 +1,43 @@
 
-  DATA:
-        ls_cob_pro        TYPE rsd_s_cob_pro,
-        lr_struct_descr   TYPE REF TO cl_abap_structdescr,
-        ls_component      TYPE abap_componentdescr,
-        lt_components     TYPE abap_component_tab,
-        lr_table_descr    TYPE REF TO cl_abap_tabledescr,
-        wa_table          TYPE abap_compdescr,
-        ls_data_txt       TYPE ty_data_txt,
-        lv_table          TYPE string,
-        lo_data_txt       TYPE REF TO data,
-        lt_text           TYPE rstxttab,
-        lv_langu          TYPE string.
+      DATA:
+    ls_cob_pro        TYPE rsd_s_cob_pro,
+    lt_components     TYPE abap_component_tab,
+    ls_component      TYPE abap_componentdescr,
+    lv_end_of_data    TYPE rs_bool,
+    lv_msg          TYPE char50,
 
+    lr_read_cube      TYPE REF TO cl_rsdri_infoprov,
+    lr_data_tmp       TYPE REF TO data,
+    lr_struct_descr   TYPE REF TO cl_abap_structdescr,
+    lr_table_descr    TYPE REF TO cl_abap_tabledescr.
 
-  FIELD-SYMBOLS: <lo_data_txt>  TYPE ANY TABLE,
-                 <fs_struc_component> TYPE any.
-                 
+    FIELD-SYMBOLS:
+                   <fs_component>   TYPE  abap_componentdescr,
+                   <zfm_tabl_spsa>  TYPE  LINE OF ty_zfms_tabl_spsa,
+                   <lo_data_tmp>    TYPE STANDARD TABLE,
+                   <o_data>         TYPE STANDARD TABLE,
+                   <field>          TYPE  any.
+                   
+    " liefert die Informationen zum InfoObjekt.
+    ls_cob_pro =  me->info_io( iv_infoobject = <zfm_tabl_spsa>-chanm ).
 
-      " Aus dem Text des InfoObjekte die Text Tabelle für den späteren Select ermitteln
-      CALL FUNCTION 'RSD_CHKTAB_GET_FOR_CHA_BAS'
-        EXPORTING
-          i_chabasnm = ls_cob_pro-iobjnm
-        IMPORTING
-          e_txttab   = lt_text
-        EXCEPTIONS
-          name_error = 1
-          OTHERS     = 2.
+    " erstellt eine Struktur mit InfoObjekt und Datentyp.
+    ls_component-name   = ls_cob_pro-fieldnm.
+    ls_component-type   ?= cl_abap_elemdescr=>describe_by_name( ls_cob_pro-dtelnm ).
+    INSERT ls_component INTO TABLE lt_components.
+    
+    " einen Typ auf der oben definierten Struktur lt_compnents erstellen.
+    lr_struct_descr ?= cl_abap_structdescr=>create( p_components = lt_components ).
 
-      " eine neue itab aus der Struktur der InfoObjekt-Texttabelle dynamisch erstellen.
-      lr_struct_descr ?= cl_abap_structdescr=>describe_by_name( lt_text ).
-      lr_table_descr ?= cl_abap_tabledescr=>create( p_line_type  = lr_struct_descr ).
+    " eine interne Tabelle auf der Basis des generierten Typ beschreiben.
+    lr_table_descr ?= cl_abap_tabledescr=>create( p_line_type  = lr_struct_descr ).
 
-      CREATE DATA lo_data_txt     TYPE HANDLE lr_table_descr.
-      ASSIGN    lo_data_txt->*  TO <lo_data_txt>.
+    " Die Referenz pr_data (Attribut) auf Basis des neuen Typ erstellen.
+    " Auf die Referenz (Daten) pr_data wird auch aus der Subklasse zugegriffen daher wird dies als Attribut erstellt.
+    CREATE DATA me->pr_data   TYPE HANDLE lr_table_descr.
 
-      " Prüfen ob die Texttabelle des Infoobjekt Sprachabhängig ist.
-      lv_langu = 0.
-      LOOP AT lr_struct_descr->components INTO wa_table .
-        IF wa_table-name EQ 'LANGU'.
-          lv_langu = 1.
-        ENDIF.
-      ENDLOOP.
-
-      IF lv_langu EQ 1.
-        SELECT * FROM (lt_text) INTO CORRESPONDING FIELDS OF TABLE <lo_data_txt> WHERE langu EQ 'DE'.
-      ELSE.
-        SELECT * FROM (lt_text) INTO CORRESPONDING FIELDS OF TABLE <lo_data_txt>.
-      ENDIF.
+    " Die Referenz zu der internen Tabelle verknüpfen
+    ASSIGN pr_data->*     TO <o_data>.
+    
+    
+    
