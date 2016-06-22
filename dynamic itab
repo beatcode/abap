@@ -3,24 +3,23 @@
     ls_cob_pro        TYPE rsd_s_cob_pro,
     lt_components     TYPE abap_component_tab,
     ls_component      TYPE abap_componentdescr,
-    lv_end_of_data    TYPE rs_bool,
-    lv_msg          TYPE char50,
-
-    lr_read_cube      TYPE REF TO cl_rsdri_infoprov,
-    lr_data_tmp       TYPE REF TO data,
     lr_struct_descr   TYPE REF TO cl_abap_structdescr,
     lr_table_descr    TYPE REF TO cl_abap_tabledescr.
 
     FIELD-SYMBOLS:
                    <fs_component>   TYPE  abap_componentdescr,
-                   <zfm_tabl_spsa>  TYPE  LINE OF ty_zfms_tabl_spsa,
-                   <lo_data_tmp>    TYPE STANDARD TABLE,
                    <o_data>         TYPE STANDARD TABLE,
                    <field>          TYPE  any.
                    
     " liefert die Informationen zum InfoObjekt.
-    ls_cob_pro =  me->info_io( iv_infoobject = <zfm_tabl_spsa>-chanm ).
-
+    
+     " Alle Informationen zum InfoObject holen
+      CALL FUNCTION 'RSD_IOBJ_GET'
+        EXPORTING
+          i_iobjnm    = '0Plant'
+        IMPORTING
+          e_s_cob_pro = ls_cob_pro.
+          
     " erstellt eine Struktur mit InfoObjekt und Datentyp.
     ls_component-name   = ls_cob_pro-fieldnm.
     ls_component-type   ?= cl_abap_elemdescr=>describe_by_name( ls_cob_pro-dtelnm ).
