@@ -11,17 +11,21 @@
                    <o_data>         TYPE STANDARD TABLE,
                    <field>          TYPE  any.
                    
-     " Alle Informationen zum InfoObject holen
-      CALL FUNCTION 'RSD_IOBJ_GET'
-        EXPORTING
-          i_iobjnm    = '0Plant'
-        IMPORTING
-          e_s_cob_pro = ls_cob_pro.
-          
-    " erstellt eine Struktur mit InfoObjekt und Datentyp.
-    ls_component-name   = ls_cob_pro-fieldnm.
-    ls_component-type   ?= cl_abap_elemdescr=>describe_by_name( ls_cob_pro-dtelnm ).
-    INSERT ls_component INTO TABLE lt_components.
+      " Todo: Evt loop über Liste mit InfoObjekten
+      
+           " Alle Informationen zum InfoObject holen
+            CALL FUNCTION 'RSD_IOBJ_GET'
+              EXPORTING
+                i_iobjnm    = '0Plant'
+              IMPORTING
+                e_s_cob_pro = ls_cob_pro.
+                
+          " erstellt eine Struktur mit InfoObjekt und Datentyp.
+          ls_component-name   = ls_cob_pro-fieldnm.
+          ls_component-type   ?= cl_abap_elemdescr=>describe_by_name( ls_cob_pro-dtelnm ).
+          INSERT ls_component INTO TABLE lt_components.
+    
+    " Todo: Ende Loop über Liste mit InfoObjekten
     
     " einen Typ auf der oben definierten Struktur lt_compnents erstellen.
     lr_struct_descr ?= cl_abap_structdescr=>create( p_components = lt_components ).
