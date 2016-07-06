@@ -1,0 +1,104 @@
+*&---------------------------------------------------------------------*
+*& Report  test
+*&
+*&---------------------------------------------------------------------*
+*&
+*&
+*&---------------------------------------------------------------------*
+
+REPORT test.
+
+" Variable
+DATA: lv_variable TYPE /bi0/oidoc_number.
+
+FIELD-SYMBOLS: <fs_variable_1> TYPE any.
+FIELD-SYMBOLS: <fs_variable_2> TYPE any.
+FIELD-SYMBOLS: <fs_variable_3> TYPE any.
+FIELD-SYMBOLS: <fs_objekt> TYPE any .
+
+DATA: lr_variable TYPE REF TO data.
+DATA: lo_variable TYPE REF TO data.
+DATA: lo_objekt  TYPE REF TO data.
+
+lv_variable = 2323.
+" Feldsymbol aus Variable
+
+ASSIGN lv_variable TO <fs_variable_1>.
+
+" Referenz
+GET REFERENCE OF lv_variable INTO lr_variable.
+
+" Feldsymbol auf Referenz
+ASSIGN lr_variable    TO <fs_variable_2>.
+
+" Feldsymbol auf Speicherbereich der Referenz
+ASSIGN lr_variable->* TO <fs_variable_3>.
+
+" Objekt
+CREATE DATA lo_variable LIKE lv_variable.
+
+TYPES: BEGIN OF ty_buchung,
+  id            TYPE i ,
+  name          TYPE c LENGTH 10,
+  produkt       TYPE i ,
+  produkt_ref   TYPE REF TO data,
+  END OF ty_buchung.
+
+TYPES: BEGIN OF ty_proudukt,
+  id      type i,
+  name    TYPE c LENGTH 10,
+  zutaten TYPE c LENGTH 30,
+  preis   TYPE p LENGTH 4 DECIMALS 2,
+  END OF ty_proudukt.
+
+DATA: lt_buchung TYPE STANDARD TABLE OF ty_buchung,
+      ls_buchung TYPE ty_buchung,
+      lr_buchung TYPE REF TO data.
+
+DATA: lt_proudukt TYPE SORTED TABLE OF ty_proudukt WITH UNIQUE KEY id,
+      ls_proudukt TYPE ty_proudukt,
+      lr_proudukt TYPE REF TO data.
+
+FIELD-SYMBOLS: <fs_buchung> TYPE ty_buchung.
+FIELD-SYMBOLS: <value>      TYPE ty_proudukt.
+FIELD-SYMBOLS: <feld1> type any.
+
+" Buchung füllen
+ls_buchung-id       = 10000.
+ls_buchung-name     = 'Hans'.
+ls_buchung-produkt  = 1.
+"ls_buchung-produkt_ref
+APPEND  ls_buchung TO lt_buchung.
+
+ls_buchung-id       = 10002.
+ls_buchung-name     = 'Fredy'.
+ls_buchung-produkt  = 2.
+APPEND ls_buchung TO lt_buchung.
+
+
+" Proudkte füllen
+ls_proudukt-id      = 1.
+ls_proudukt-name    = 'Margherita'.
+ls_proudukt-zutaten = 'Mozarella, Tomaten'.
+ls_proudukt-preis   = 12.
+APPEND  ls_proudukt TO lt_proudukt.
+
+ls_proudukt-id      = 2.
+ls_proudukt-name    = 'Prosciutto'.
+ls_proudukt-zutaten = 'Mozarella, Tomaten, Schinken'.
+ls_proudukt-preis   = 15.
+APPEND  ls_proudukt TO lt_proudukt.
+
+" über Buchung loopen und die Referenz der Produkte in das Feld Produkt_ref ergänzen.
+" Somit kann später über das Auflösen der Referenz auf alle Produktedetail zugegrifen werden.
+
+LOOP AT lt_buchung ASSIGNING <fs_buchung>.
+
+  READ TABLE lt_proudukt WITH TABLE KEY id = <fs_buchung>-produkt REFERENCE INTO <fs_buchung>-produkt_ref .
+
+  ASSIGN <fs_buchung>-produkt_ref->* TO  <value>.
+
+  WRITE <value>-name.
+ENDLOOP.
+
+BREAK-POINT.
