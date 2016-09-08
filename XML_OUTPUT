@@ -1,0 +1,14 @@
+
+**********************************************************************
+* XML Output
+**********************************************************************
+
+DATA : xml_out TYPE xstring.
+
+call TRANSFORMATION ('ID')
+SOURCE TAB = itab
+RESULT XML XML_OUT.
+
+CALL FUNCTION 'DISPLAY_XML_STRING'
+    EXPORTING
+      xml_string = xml_out.
