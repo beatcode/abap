@@ -1,4 +1,7 @@
 
+  " Es wird eine dynamisch definierte interne Tabelle erstellt.
+  
+  
       DATA:
     ls_cob_pro        TYPE rsd_s_cob_pro,
     lt_components     TYPE abap_component_tab,
