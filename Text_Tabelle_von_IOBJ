@@ -2,7 +2,7 @@
 DATA:   ls_cob_pro  TYPE rsd_s_cob_pro,
         lt_text     TYPE rstxttab.
 
-" Aus dem Text des InfoObjekte die Text Tabelle für den späteren Select ermitteln
+" Aus dem InfoObjekte die Text Tabelle für den späteren Select ermitteln
         CALL FUNCTION 'RSD_CHKTAB_GET_FOR_CHA_BAS'
           EXPORTING
             i_chabasnm = ls_cob_pro-iobjnm
