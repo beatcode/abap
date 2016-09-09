@@ -17,7 +17,7 @@
            " Alle Informationen zum InfoObject holen
             CALL FUNCTION 'RSD_IOBJ_GET'
               EXPORTING
-                i_iobjnm    = '0Plant'
+                i_iobjnm    = '0PLANT'
               IMPORTING
                 e_s_cob_pro = ls_cob_pro.
                 
