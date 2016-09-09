@@ -1,7 +1,5 @@
 
-**********************************************************************
-* XML Output
-**********************************************************************
+" Folgender Code konvertiert die interne Tabelle itab in eine XML Datei
 
 DATA : xml_out TYPE xstring.
 
@@ -12,3 +10,5 @@ RESULT XML XML_OUT.
 CALL FUNCTION 'DISPLAY_XML_STRING'
     EXPORTING
       xml_string = xml_out.
+
+
