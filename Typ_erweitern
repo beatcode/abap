@@ -1,0 +1,18 @@
+
+
+TYPES:
+  BEGIN OF ty_main,
+    name TYPE c,
+  END OF ty_main.
+
+
+TYPES:
+  BEGIN OF ty_main_ext.
+          INCLUDE TYPE ty_main.    
+  TYPES: plz TYPE c.    
+  TYPES END OF ty_main_ext.
+
+data: lv_kunden type ty_main_ext.
+
+lv_kunden-name  = 'Hans'.
+lv_kunden-plz   = '8000'.
