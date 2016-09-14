@@ -1,0 +1,17 @@
+
+ data: lt_offer_range  TYPE RANGE OF /bic/oimipooffer.
+
+        LOOP AT lt_angebot ASSIGNING <fs_angebot>.
+          ls_offer_range-sign = 'I'.
+          ls_offer_range-option = 'EQ'.
+          ls_offer_range-low = <fs_angebot>-/bic/mipooffer.
+          APPEND ls_offer_range TO lt_offer_range.
+        ENDLOOP.
+        
+*Berechnung Anzahl der Artikel pro Angebot aus Artikel-DSO
+
+    SELECT /bic/mipooffer COUNT( * ) AS count
+      FROM /bic/amdpoffew00 
+      INTO CORRESPONDING FIELDS OF TABLE lt_art_count
+      WHERE /bic/mipooffer IN lt_offer_range
+      GROUP BY /bic/mipooffer.
