@@ -1,0 +1,30 @@
+REPORT  Z_BSU_PRODUCT.
+
+data: lv_job_count      type i,
+      lv_job_active     type i,
+      it_variant        TYPE STANDARD TABLE OF raldb_vari,
+      lv_message1      TYPE msgv1,
+      lv_message2      TYPE msgv1,
+      lv_message3      TYPE msgv1.
+
+FIELD-SYMBOLS: <fs_variant_active> type raldb_vari.
+
+APPEND 'PRO_14.08.2016' TO it_variant.
+APPEND 'ACT_14.08.2016' TO it_variant.
+APPEND 'LOC_14.08.2016' TO it_variant.
+
+
+" über die itab mit den Varianten loopen
+loop at IT_VARIANT ASSIGNING <FS_VARIANT_ACTIVE>.
+
+    " Meldung ausgeben dass das Program startet.
+    CONCATENATE ' Variante ' <FS_VARIANT_ACTIVE> ' gestartet.' INTO lv_message1.
+    MESSAGE ID 'Z_BW' TYPE 'I' NUMBER '005' WITH lv_message1.
+
+  " Program starten
+  SUBMIT yfmt_prog_sps using SELECTION-SET <FS_VARIANT_ACTIVE> AND RETURN.
+
+    " Meldung ausgeben dass das Program beendet ist.
+    CONCATENATE ' Variante ' <FS_VARIANT_ACTIVE> ' beendet.' INTO lv_message1.
+    MESSAGE ID 'Z_BW' TYPE 'I' NUMBER '005' WITH lv_message1.
+ENDLOOP.
