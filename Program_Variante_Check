@@ -1,0 +1,30 @@
+DATA:
+      ls_disvariant       TYPE disvariant.
+      
+
+PARAMETERS: progr       TYPE programm  MATCHCODE OBJECT  sh_report,
+            variant     TYPE variant.
+
+
+IF variant IS NOT INITIAL.
+
+      " Prüfen ob es die angegebene Variante überhaupt gibt.
+      CALL FUNCTION 'LVC_VARIANT_EXISTENCE_CHECK'
+        EXPORTING
+          i_save        = 
+        CHANGING
+          cs_variant    = ls_disvariant
+        EXCEPTIONS
+          wrong_input   = 1
+          not_found     = 2
+          program_error = 3
+          OTHERS        = 4.
+      IF sy-subrc <> 0 .
+
+       SUBMIT (progr)
+*       WITH SELECTION-TABLE rspar_tab
+            USING SELECTION-SET variant
+            AND RETURN.
+
+      ENDIF.
+endif.
