@@ -1,0 +1,18 @@
+
+PARAMETERS:   paramdso  AS CHECKBOX  USER-COMMAND rcommand,
+              p_chain   TYPE rspc_chain   DEFAULT 'Prozesskettenname'.
+
+AT SELECTION-SCREEN OUTPUT.
+
+****************** Reagieren auf Benutzereingabe ***********************
+
+  " Nach Benutzereingabe reagieren
+  LOOP AT SCREEN.
+
+    IF paramdso = 'X' AND screen-name = 'P_CHAIN' .
+      lv_typ = ''.
+      screen-input = 0.
+      MODIFY SCREEN.
+    ENDIF.
+
+  ENDLOOP.
