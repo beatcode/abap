@@ -1,0 +1,24 @@
+
+
+
+ data: ls_fparams  TYPE bapi6109file,
+       lv_ipak     TYPE rslogdpid,
+       lt_return1  LIKE TABLE OF bapiret2.
+
+ls_fparams-filename = lv_filename.
+
+ CALL FUNCTION 'BAPI_IPAK_CHANGE'
+      EXPORTING
+        infopackage        = p_ipak
+*       DETAILS            = '!'
+*       SCHEDULING_PARAMS  = '!'
+*       DESTINATIONS       = '!'
+        file_params        = ls_fparams
+*       HIE_PARAMS         = '!'
+      TABLES
+*       SELECTIONS         =
+*       INFOCUBES          =
+*       THIRD_PARTY_PARAMS =
+        return             = lt_return1.
+
+ 
