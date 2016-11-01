@@ -1,0 +1,9 @@
+DATA:
+** Referenzen
+  lo_struc_desc TYPE REF TO cl_abap_structdescr,
+  pt_components TYPE abap_component_tab.
+
+* Komponenten lesen
+lo_struc_desc ?= cl_abap_structdescr=>describe_by_name( p_name = gp_table ).
+pt_components = lo_struc_desc->get_components( ).
+
