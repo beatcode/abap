@@ -1,0 +1,6 @@
+
+
+
+" Schneidet von Rechts 13 Zeichen ab.
+<lv_file> = SHIFT_right( val = <lv_file> places = 13 ).
+
