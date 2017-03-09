@@ -1,0 +1,8 @@
+
+FIELD-SYMBOLS:
+    <lt_result_data>     TYPE STANDARD TABLE.
+
+data: lo_result_data TYPE REF TO data.
+
+CREATE DATA lo_result_data LIKE <lt_result_data>.
+  ASSIGN lo_result_data->* TO <lt_reuslt_data_tmp>.
