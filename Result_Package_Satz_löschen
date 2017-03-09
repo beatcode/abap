@@ -1,0 +1,12 @@
+
+
+data:  lv_tabix       TYPE sy-tabix.
+
+
+
+  LOOP AT <lt_result_data> ASSIGNING <ls_result_data>.
+    lv_tabix = sy-tabix.      
+  
+  ENDLOOP.
+
+  DELETE <lt_result_data> INDEX lv_tabix.
