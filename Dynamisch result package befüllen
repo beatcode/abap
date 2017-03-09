@@ -1,0 +1,15 @@
+
+
+* Package aus Referenz holen
+  ASSIGN ir_source_data->* TO <lt_source_data>.
+  ASSIGN ir_result_data->* TO <lt_result_data>.
+
+  CREATE DATA ls_result_data LIKE LINE OF <lt_result_data>.
+  ASSIGN ls_result_data->* TO <ls_result_data>.
+  
+   <lv_calweek> = '201727'.
+   
+   " Struktur befüllen
+    ASSIGN COMPONENT 'CALWEEK' OF STRUCTURE <ls_result_data> TO <lv_calweek>.
+        
+    INSERT <ls_result_data> INTO TABLE <lt_result_data>.
