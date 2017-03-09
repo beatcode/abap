@@ -13,3 +13,8 @@
     ASSIGN COMPONENT 'CALWEEK' OF STRUCTURE <ls_result_data> TO <lv_calweek>.
         
     INSERT <ls_result_data> INTO TABLE <lt_result_data>.
+
+" ODER bei standard Table für die Struktur
+
+    APPEND INITIAL LINE TO <lt_result_data> ASSIGNING <ls_result_data>.
+    
