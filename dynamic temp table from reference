@@ -1,0 +1,11 @@
+
+  DATA:
+     lr_data        TYPE  REF TO   data.
+
+  FIELD-SYMBOLS:
+*  Tabellen
+    <ft_data>      TYPE  STANDARD TABLE,
+    <ft_data_tmp>  TYPE  STANDARD TABLE.
+
+  CREATE DATA lr_data LIKE <ft_data>.
+  ASSIGN lr_data->* TO <ft_data_tmp>.
