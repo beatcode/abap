@@ -1,5 +1,5 @@
 
-
+* Input Parmeter ir_data (Referenz auf Datenpackage)
   DATA:
         lr_data         TYPE REF TO   data.
 
