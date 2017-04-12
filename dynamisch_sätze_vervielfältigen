@@ -1,5 +1,6 @@
 
 * Input Parmeter ir_data (Referenz auf Datenpackage)
+
   DATA:
         lr_data         TYPE REF TO   data.
 
@@ -24,39 +25,37 @@
 
 *  Datenpaket das angereichert werden soll zuweisen
   ASSIGN ir_data->* TO <ft_data>.
+
+* Datenbojekt temporäre Tablle erstellen. Ansonsten würde es durch die Vervielfältigung einen Endloop produzieren.
   CREATE DATA lr_data LIKE <ft_data>.
   ASSIGN lr_data->* TO <ft_data_tmp>.
-
-
 
 *  Datenpaket abarbeiten und Einzelrecs anreichern
   LOOP AT <ft_data> ASSIGNING <fs_data_tmp>.
 
-
+    " VS und Stufe auslesen --> Damit wird im VSFil den Betrieb ermittelt
     ASSIGN COMPONENT '/BIC/ZYYLVSTUF' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylvstuf>.
     ASSIGN COMPONENT '/BIC/ZYYLBSSVS' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylbssvs>.
 
-    " Pro VS + ST die Sätze mit Betrieb vervielfältigen
+    " Vervielfätigung der Sätze | über VSFIL mit VS und Stufe
     LOOP AT me->pt_vsfil ASSIGNING <fs_vsfil>
       WHERE /bic/oizyylvstuf = <fs_zyylvstuf> AND  /bic/oizyylvsfil = <fs_zyylbssvs>.
-
 
       " Betrieb aus VSFIL (VS + ST = Betrieb) ergänzen
       ASSIGN COMPONENT '/BIC/zyylplant' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylplant>.
 
       <fs_zyylplant> = <fs_vsfil>-/bic/oizyylplant.
 
-      " Neuer Datensatz anfügen
+      " Neuer Datensatz anfügen | Vervielfältigung
       APPEND <fs_data_tmp> TO <ft_data_tmp>.
 
     ENDLOOP.
 
   ENDLOOP.
 
+  " Inahlt des Datenpakets löschen
   FREE: <ft_data>.
-  <ft_data>[] = <ft_data_tmp>[].
 
-  me->standard_transform(
-  EXPORTING
-    ir_data           = ir_data
+  " Inahlt der temp Tabelle an das Datenpaket übergeben
+  <ft_data>[] = <ft_data_tmp>[].
 
