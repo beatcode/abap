@@ -1,0 +1,62 @@
+
+
+  DATA:
+        lr_data         TYPE REF TO   data.
+
+  FIELD-SYMBOLS:
+
+*  Felder
+    <fs_zyylvstuf> TYPE any,
+    <fs_zyylbssvs> TYPE any,
+    <fs_zyylplant> TYPE any,
+
+*  Strukturen
+
+    <fs_data_tmp>  TYPE any,
+    <fs_data>      TYPE any,
+
+    <fs_vsfil>     TYPE  me->ty_vsfil,
+
+*  Tabellen
+    <ft_data>      TYPE  STANDARD TABLE,
+    <ft_data_tmp>  TYPE  STANDARD TABLE.
+
+
+*  Datenpaket das angereichert werden soll zuweisen
+  ASSIGN ir_data->* TO <ft_data>.
+  CREATE DATA lr_data LIKE <ft_data>.
+  ASSIGN lr_data->* TO <ft_data_tmp>.
+
+
+
+*  Datenpaket abarbeiten und Einzelrecs anreichern
+  LOOP AT <ft_data> ASSIGNING <fs_data_tmp>.
+
+
+    ASSIGN COMPONENT '/BIC/ZYYLVSTUF' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylvstuf>.
+    ASSIGN COMPONENT '/BIC/ZYYLBSSVS' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylbssvs>.
+
+    " Pro VS + ST die Sätze mit Betrieb vervielfältigen
+    LOOP AT me->pt_vsfil ASSIGNING <fs_vsfil>
+      WHERE /bic/oizyylvstuf = <fs_zyylvstuf> AND  /bic/oizyylvsfil = <fs_zyylbssvs>.
+
+
+      " Betrieb aus VSFIL (VS + ST = Betrieb) ergänzen
+      ASSIGN COMPONENT '/BIC/zyylplant' OF STRUCTURE  <fs_data_tmp> TO <fs_zyylplant>.
+
+      <fs_zyylplant> = <fs_vsfil>-/bic/oizyylplant.
+
+      " Neuer Datensatz anfügen
+      APPEND <fs_data_tmp> TO <ft_data_tmp>.
+
+    ENDLOOP.
+
+  ENDLOOP.
+
+  FREE: <ft_data>.
+  <ft_data>[] = <ft_data_tmp>[].
+
+  me->standard_transform(
+  EXPORTING
+    ir_data           = ir_data
+
