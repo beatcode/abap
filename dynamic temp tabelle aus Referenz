@@ -25,3 +25,6 @@
         
        " kommende Felder 1:1 in die neue leere Zeile füllen
         MOVE-CORRESPONDING <ls_result_data> TO <ls_data_tmp>.
+        
+        ASSIGN COMPONENT 'CALWEEK'        OF STRUCTURE <ls_data_tmp> TO <lv_calweek>.
+        ASSIGN COMPONENT '/BIC/ZZZZ1213'  OF STRUCTURE <ls_data_tmp> TO <lv_ZZZZ1213>.
