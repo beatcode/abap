@@ -22,3 +22,6 @@
 
         " Leere Zeile erzeugen
         APPEND INITIAL LINE TO <lt_data_tmp> ASSIGNING <ls_data_tmp>.
+        
+       " kommende Felder 1:1 in die neue leere Zeile füllen
+        MOVE-CORRESPONDING <ls_result_data> TO <ls_data_tmp>.
