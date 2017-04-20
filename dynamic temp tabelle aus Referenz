@@ -1,11 +1,24 @@
 
   DATA:
      lr_data        TYPE  REF TO   data.
+     
+
 
   FIELD-SYMBOLS:
 *  Tabellen
     <ft_data>      TYPE  STANDARD TABLE,
-    <ft_data_tmp>  TYPE  STANDARD TABLE.
+    <ft_data_tmp>  TYPE  STANDARD TABLE,
 
+* STRUKTURREN
+    <ls_data_tmp>  TYPE any.
+    
+    
   CREATE DATA lr_data LIKE <ft_data>.
   ASSIGN lr_data->* TO <ft_data_tmp>.
+
+
+....
+
+
+        " Leere Zeile erzeugen
+        APPEND INITIAL LINE TO <lt_data_tmp> ASSIGNING <ls_data_tmp>.
