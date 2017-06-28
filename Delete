@@ -1,0 +1,3 @@
+
+
+    delete TABLE pt_itab WITH TABLE KEY /bic/feld = <fs_feld>.
