@@ -1,0 +1,22 @@
+DATA:
+** Referenzen
+  lt_sort         TYPE SORTED TABLE OF rsdcube WITH UNIQUE KEY infocube objvers,
+  lr_table_descr  TYPE REF TO cl_abap_tabledescr,
+  lr_struct_descr TYPE REF TO cl_abap_structdescr,
+  lr_data_sort    TYPE REF TO data,
+  lr_test         TYPE REF TO data.
+  
+FIELD-SYMBOLS:
+
+     <lt_sort> TYPE SORTED TABLE.
+
+
+GET REFERENCE OF lt_sort INTO lr_test.
+
+lr_table_descr ?= cl_abap_typedescr=>describe_by_data_ref( lr_test ).
+CREATE DATA lr_data_sort type HANDLE lr_table_descr.
+
+ASSIGN lr_data_sort->* to <lt_sort>.
+
+
+BREAK-POINT.
