@@ -1,0 +1,20 @@
+
+
+    LOOP AT <lt_data> ASSIGNING <fs_data>.
+
+      " Textfeld zum updaten
+      ASSIGN COMPONENT '/BIC/ZYYLVERBZ' OF STRUCTURE <fs_data> TO FIELD-SYMBOL(<ls_zyylverbz>).
+
+      " Schlüssel zum suchen
+      ASSIGN COMPONENT 'VENDOR' OF STRUCTURE <fs_data> TO FIELD-SYMBOL(<ls_vendor>).
+      ASSIGN COMPONENT '/BIC/ZYYLULREF' OF STRUCTURE <fs_data> TO FIELD-SYMBOL(<ls_zyylulref>).
+      ASSIGN COMPONENT '/BIC/M_IO_BB' OF STRUCTURE <fs_data> TO FIELD-SYMBOL(<ls_m_io_bb>).
+
+      " Text updaten
+      READ TABLE <lt_text> ASSIGNING FIELD-SYMBOL(<field>) WITH KEY ('VENDOR') = <ls_vendor> ('/BIC/ZYYLULREF') = <ls_zyylulref> ('/BIC/M_IO_BB') = <ls_m_io_bb>.
+
+      IF sy-subrc = 0.
+        <ls_zyylverbz> = <field> .
+      ENDIF.
+
+    ENDLOOP.
